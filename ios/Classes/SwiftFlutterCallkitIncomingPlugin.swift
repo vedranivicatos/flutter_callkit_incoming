@@ -295,11 +295,12 @@ public class SwiftFlutterCallkitIncomingPlugin: NSObject, FlutterPlugin, CXProvi
     func configurAudioSession(){
         let session = AVAudioSession.sharedInstance()
         do{
-            try session.setCategory(AVAudioSession.Category.playAndRecord, options: AVAudioSession.CategoryOptions.allowBluetooth)
-            try session.setMode(self.getAudioSessionMode(data?.audioSessionMode))
+//            let isFullDuplex = self.data?.extra["type"] as! Int == 5
+            try session.setCategory(AVAudioSession.Category.playAndRecord, options: [.defaultToSpeaker, .mixWithOthers])
+//            try session.setMode(self.getAudioSessionMode(data?.audioSessionMode))
             try session.setActive(data?.audioSessionActive ?? true)
-            try session.setPreferredSampleRate(data?.audioSessionPreferredSampleRate ?? 44100.0)
-            try session.setPreferredIOBufferDuration(data?.audioSessionPreferredIOBufferDuration ?? 0.005)
+//            try session.setPreferredSampleRate(data?.audioSessionPreferredSampleRate ?? 44100.0)
+//            try session.setPreferredIOBufferDuration(data?.audioSessionPreferredIOBufferDuration ?? 0.005)
         }catch{
             print(error)
         }
@@ -395,7 +396,7 @@ public class SwiftFlutterCallkitIncomingPlugin: NSObject, FlutterPlugin, CXProvi
         self.callManager?.removeCall(call)
         if (self.answerCall == nil && self.outgoingCall == nil) {
             sendEvent(SwiftFlutterCallkitIncomingPlugin.ACTION_CALL_DECLINE, self.data?.toJSON())
-            DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 action.fulfill()
             }
         }else {
@@ -480,12 +481,10 @@ public class SwiftFlutterCallkitIncomingPlugin: NSObject, FlutterPlugin, CXProvi
             print("Call is on hold")
             return
         }
-        self.outgoingCall?.endCall()
-        if(self.outgoingCall != nil){
+        if(self.outgoingCall != nil && self.outgoingCall!.hasEnded){
             self.outgoingCall = nil
         }
-        self.answerCall?.endCall()
-        if(self.answerCall != nil){
+        if(self.answerCall != nil && self.answerCall!.hasEnded){
             self.answerCall = nil
         }
 //        self.callManager?.removeAllCalls()
