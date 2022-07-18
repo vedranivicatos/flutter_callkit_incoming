@@ -476,7 +476,7 @@ public class SwiftFlutterCallkitIncomingPlugin: NSObject, FlutterPlugin, CXProvi
         }
         senddefaultAudioInterruptionNofificationToStartAudioResource()
         configurAudioSession()
-        self.sendEvent(SwiftFlutterCallkitIncomingPlugin.ACTION_CALL_TOGGLE_AUDIO_SESSION, [ "isActivate": true ])
+        self.sendEvent(SwiftFlutterCallkitIncomingPlugin.ACTION_CALL_TOGGLE_AUDIO_SESSION, ["isActivate": true].merging(self.data?.toJSON() ?? [:]) { (current, _) in current})
     }
     
     public func provider(_ provider: CXProvider, didDeactivate audioSession: AVAudioSession) {
