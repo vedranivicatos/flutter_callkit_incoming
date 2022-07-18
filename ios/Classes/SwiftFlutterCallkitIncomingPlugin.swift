@@ -295,8 +295,11 @@ public class SwiftFlutterCallkitIncomingPlugin: NSObject, FlutterPlugin, CXProvi
     func configurAudioSession(){
         let session = AVAudioSession.sharedInstance()
         do{
-//            let isFullDuplex = self.data?.extra["type"] as! Int == 5
-            try session.setCategory(AVAudioSession.Category.playAndRecord, options: [.defaultToSpeaker, .mixWithOthers])
+            if(session.category == .playAndRecord && session.categoryOptions.contains([.defaultToSpeaker, .mixWithOthers])){
+                print("Category already configured")
+            } else {
+                try session.setCategory(AVAudioSession.Category.playAndRecord, options: [.defaultToSpeaker, .mixWithOthers])
+            }
 //            try session.setMode(self.getAudioSessionMode(data?.audioSessionMode))
             try session.setActive(data?.audioSessionActive ?? true)
 //            try session.setPreferredSampleRate(data?.audioSessionPreferredSampleRate ?? 44100.0)
@@ -515,3 +518,4 @@ class EventCallbackHandler: FlutterStreamHandler {
         return nil
     }
 }
+
