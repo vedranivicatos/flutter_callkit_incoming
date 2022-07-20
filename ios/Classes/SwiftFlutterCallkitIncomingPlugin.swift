@@ -313,11 +313,21 @@ public class SwiftFlutterCallkitIncomingPlugin: NSObject, FlutterPlugin, CXProvi
     
     func configurAudioSession(){
         let session = AVAudioSession.sharedInstance()
+        var opts : AVAudioSession.CategoryOptions = []
+        if self.data?.extra["options"] != nil, let receivedOpts = self.data?.extra["options"] as? UInt {
+            var start: UInt = 1
+            while(start <= receivedOpts){
+                if(receivedOpts & start != 0){
+                    opts.insert(AVAudioSession.CategoryOptions.init(rawValue: start))
+                }
+                start = start << 1
+            }
+        }
         do{
-            if(session.category == .playAndRecord && session.categoryOptions.contains([.defaultToSpeaker, .mixWithOthers])){
+            if(session.category == .playAndRecord && session.categoryOptions == opts){
                 print("Category already configured")
             } else {
-                try session.setCategory(AVAudioSession.Category.playAndRecord, options: [.defaultToSpeaker, .mixWithOthers])
+                try session.setCategory(AVAudioSession.Category.playAndRecord, options: opts)
             }
 //            try session.setMode(self.getAudioSessionMode(data?.audioSessionMode))
             try session.setActive(data?.audioSessionActive ?? true)
