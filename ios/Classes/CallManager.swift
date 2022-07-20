@@ -83,6 +83,12 @@ class CallManager: NSObject {
         //requestCall
     }
     
+    func setMuteCall(callUUID: String, muted: Bool){
+        let muteCallAction = CXSetMutedCallAction(call: UUID(uuidString: callUUID)!, muted: muted)
+        let callTransaction = CXTransaction()
+        callTransaction.addAction(muteCallAction)
+        self.requestCall(callTransaction, action: "muteCall")
+    }
     
     private func requestCall(_ transaction: CXTransaction, action: String, completion: ((Bool) -> Void)? = nil) {
         callController.request(transaction){ error in

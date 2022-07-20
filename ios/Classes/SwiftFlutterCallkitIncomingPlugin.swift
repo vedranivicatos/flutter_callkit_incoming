@@ -115,6 +115,19 @@ public class SwiftFlutterCallkitIncomingPlugin: NSObject, FlutterPlugin, CXProvi
         case "getDevicePushTokenVoIP":
             result(self.getDevicePushTokenVoIP())
             break;
+        case "setMuteCall":
+            guard let args = call.arguments else {
+                result("OK")
+                return
+            }
+            if let getArgs = args as? [String: Any] {
+                self.setMuteCall(
+                    callUUID: getArgs["uuid"] as! String,
+                    muted: getArgs["muted"] as! Bool
+                )
+            }
+            result("OK")
+            break
         default:
             result(FlutterMethodNotImplemented)
         }
@@ -192,6 +205,12 @@ public class SwiftFlutterCallkitIncomingPlugin: NSObject, FlutterPlugin, CXProvi
     @objc public func endAllCalls() {
         self.isFromPushKit = false
         self.callManager?.endCallAlls()
+    }
+    
+    @objc public func setMuteCall(callUUID: String, muted: Bool){
+        if(self.callManager != nil){
+            self.callManager!.setMuteCall(callUUID: callUUID, muted: muted)
+        }
     }
     
     public func saveEndCall(_ uuid: String, _ reason: Int) {

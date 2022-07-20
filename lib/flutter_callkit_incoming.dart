@@ -79,6 +79,16 @@ class FlutterCallkitIncoming {
     return await _channel.invokeMethod("getDevicePushTokenVoIP");
   }
 
+  /// Mutes/Unmutes a call
+  /// On iOS: mutes/unmutes a call using Callkit mute action
+  /// On Android: not implemented yet
+  static Future setMuteCall(String callUUID, bool muted) async {
+    return await _channel.invokeMethod("setMuteCall", {
+      "uuid" : callUUID,
+      "muted" : muted
+    });
+  }
+
   static CallEvent? _receiveCallEvent(dynamic data) {
     var event = "";
     dynamic body = {};
