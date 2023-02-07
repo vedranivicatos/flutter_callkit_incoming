@@ -260,7 +260,7 @@ public class Call: NSObject {
     }
     
     func getEncryptHandle() -> String {
-        return String(format: "{\"nameCaller\":\"%@\", \"handle\":\"%@\"}", nameCaller, handle).encryptHandle()
+        return String(format: "{\"nameCaller\":\"%@\", \"handle\":\"%@\", \"type\":%d}", nameCaller, handle, extra["type"] as? Int ?? -1).encryptHandle()
     }
     
     
